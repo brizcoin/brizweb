@@ -146,22 +146,38 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-        .crypto-container {
+        .crypto-columns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             position: absolute;
             bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 10px;
+        }
+        .crypto-container.prices, .crypto-container.top-coins {
             background: rgba(0, 0, 0, 0.7);
             border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            min-width: 180px;
         }
         body.light-mode .crypto-container {
             background: rgba(255, 255, 255, 0.7);
         }
-        .crypto-container p {
+        .top-coins h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+        }
+        .top-coin {
+            display: flex;
+            align-items: center;
             margin: 5px 0;
+        }
+        .top-coin img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
         }
         .price-change.positive {
             color: #00ff00;
@@ -182,10 +198,15 @@
                 width: 80px;
                 height: 80px;
             }
-            .crypto-container {
-                font-size: 1rem;
+            .crypto-columns {
+                flex-direction: column;
+                gap: 10px;
                 bottom: 80px;
                 width: 90%;
+            }
+            .crypto-container {
+                min-width: unset;
+                width: 100%;
             }
         }
     </style>
@@ -202,20 +223,22 @@
             <span class="slider"></span>
         </label>
     </div>
-    <div class="crypto-container" id="crypto-data">
-        <p>BTC: <span id="btc-price">Loading...</span><span id="btc-change" class="price-change"></span></p>
-        <p>ETH: <span id="eth-price">Loading...</span><span id="eth-change" class="price-change"></span></p>
-        <p>SOL: <span id="sol-price">Loading...</span><span id="sol-change" class="price-change"></span></p>
-        <p>Pump.fun Volume: <span id="pump-volume">Loading...</span> SOL</p>
+    <div class="crypto-columns">
+        <div class="crypto-container prices">
+            <p>BTC: <span id="btc-price">Loading...</span><span id="btc-change" class="price-change"></span></p>
+            <p>ETH: <span id="eth-price">Loading...</span><span id="eth-change" class="price-change"></span></p>
+            <p>SOL: <span id="sol-price">Loading...</span><span id="sol-change" class="price-change"></span></p>
+        </div>
+        <div class="crypto-container top-coins">
+            <h3>Top 5 Pump.fun Coins</h3>
+            <div id="top-coins-list"></div>
+        </div>
     </div>
 
     <script>
-        // Fetch crypto prices from CoinGecko
         async function fetchCryptoPrices() {
             try {
-                const response = await fetch(
-                    'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true'
-                );
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true');
                 if (!response.ok) throw new Error('CoinGecko API failed');
                 const data = await response.json();
 
@@ -241,8 +264,7 @@
             }
         }
 
-        // Fetch Pump.fun volume from Netlify Function
-        async function fetchPumpFunVolume() {
+        async function fetchTopCoins() {
             try {
                 const response = await fetch('/.netlify/functions/pumpfun-volume');
                 if (!response.ok) {
@@ -251,23 +273,31 @@
                 }
                 const data = await response.json();
                 if (!data.success) throw new Error(`API error: ${data.message || 'Unknown error'}`);
-                const volume = data.data.volume.toLocaleString(undefined, { maximumFractionDigits: 2 });
-                document.getElementById('pump-volume').textContent = volume;
+
+                const coinList = document.getElementById('top-coins-list');
+                coinList.innerHTML = '';
+                data.data.forEach(coin => {
+                    const div = document.createElement('div');
+                    div.className = 'top-coin';
+                    div.innerHTML = `
+                        ${coin.image ? `<img src="${coin.image}" alt="${coin.name}">` : ''}
+                        <span>${coin.name}: $${coin.marketcap.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    `;
+                    coinList.appendChild(div);
+                });
             } catch (error) {
-                console.error('Pump.fun Volume Error:', error);
-                document.getElementById('pump-volume').textContent = 'N/A';
+                console.error('Top Coins Error:', error);
+                document.getElementById('top-coins-list').innerHTML = 'N/A';
             }
         }
 
-        // Update data periodically
         function updateData() {
             fetchCryptoPrices();
-            fetchPumpFunVolume();
+            fetchTopCoins();
         }
         updateData();
-        setInterval(updateData, 30000); // Update every 30 seconds
+        setInterval(updateData, 30000);
 
-        // Theme toggle
         const toggle = document.getElementById('theme-toggle');
         const logo = document.getElementById('logo');
         const label = document.querySelector('.toggle-label');
@@ -288,7 +318,6 @@
             }, 300);
         });
 
-        // Coming Soon animation
         const comingSoon = document.querySelector('.coming-soon');
         const verySoon = document.querySelector('.very-soon');
         let isHovering = false;
@@ -297,7 +326,7 @@
         function startAnimation() {
             if (comingSoon.parentNode) {
                 comingSoon.style.animation = 'none';
-                void comingSoon.offsetWidth; // Trigger reflow
+                void comingSoon.offsetWidth;
                 const animationName = document.body.classList.contains('light-mode') ? 'pulse-light' : 'pulse';
                 comingSoon.style.animation = `${animationName} 5s`;
                 clearTimeout(swapTimeout);
