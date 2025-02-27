@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 
-// Replace with your actual Birdeye API key
-const BIRDEYE_API_KEY = '13a2dc6384e64bd6bc686a62de399735';
+const BIRDEYE_API_KEY = '13a2dc6384e64bd6bc686a62de399735'; // Replace with your real key
 
 exports.handler = async function (event, context) {
     try {

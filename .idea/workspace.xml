@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/netlify/package.json" afterDir="false" />
+    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="package.json in main directory">
+      <change beforePath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" beforeDir="false" afterPath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,8 +122,33 @@
       <updated>1740581573682</updated>
       <workItem from="1740581574807" duration="8680000" />
       <workItem from="1740625233327" duration="2057000" />
-      <workItem from="1740682765400" duration="4875000" />
+      <workItem from="1740682765400" duration="5110000" />
     </task>
+    <task id="LOCAL-00001" summary="package json shi">
+      <option name="closed" value="true" />
+      <created>1740688151879</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1740688151880</updated>
+    </task>
+    <task id="LOCAL-00002" summary="after package index fix">
+      <option name="closed" value="true" />
+      <created>1740688195050</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1740688195050</updated>
+    </task>
+    <task id="LOCAL-00003" summary="package.json in main directory">
+      <option name="closed" value="true" />
+      <created>1740688230586</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1740688230586</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,5 +176,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="package json shi" />
+    <MESSAGE value="after package index fix" />
+    <MESSAGE value="package.json in main directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="package.json in main directory" />
   </component>
 </project>
