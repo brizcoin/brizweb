@@ -244,4 +244,130 @@
             try {
                 const response = await fetch('/.netlify/functions/coingecko-prices');
                 if (!response.ok) throw new Error(`CoinGecko fetch failed: ${await response.text()}`);
-                const data = await response
+                const data = await response.json();
+
+                document.getElementById('btc-price').textContent = `$${data.bitcoin.usd.toLocaleString()}`;
+                const btcChange = data.bitcoin.usd_24h_change.toFixed(2);
+                document.getElementById('btc-change').textContent = `(${btcChange}%)`;
+                document.getElementById('btc-change').classList.add(btcChange >= 0 ? 'positive' : 'negative');
+
+                await delay(2000);
+                document.getElementById('eth-price').textContent = `$${data.ethereum.usd.toLocaleString()}`;
+                const ethChange = data.ethereum.usd_24h_change.toFixed(2);
+                document.getElementById('eth-change').textContent = `(${ethChange}%)`;
+                document.getElementById('eth-change').classList.add(ethChange >= 0 ? 'positive' : 'negative');
+
+                await delay(2000);
+                document.getElementById('sol-price').textContent = `$${data.solana.usd.toLocaleString()}`;
+                const solChange = data.solana.usd_24h_change.toFixed(2);
+                document.getElementById('sol-change').textContent = `(${solChange}%)`;
+                document.getElementById('sol-change').classList.add(solChange >= 0 ? 'positive' : 'negative');
+            } catch (error) {
+                console.error('Crypto Prices Error:', error);
+                document.getElementById('btc-price').textContent = 'N/A';
+                document.getElementById('eth-price').textContent = 'N/A';
+                document.getElementById('sol-price').textContent = 'N/A';
+            }
+        }
+
+        async function fetchTopCoins() {
+            try {
+                const response = await fetch('/.netlify/functions/pumpfun-volume');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Function failed: ${response.status} - ${errorText}`);
+                }
+                const data = await response.json();
+                if (!data.success) throw new Error(`API error: ${data.message || 'Unknown error'}`);
+
+                const coinList = document.getElementById('top-coins-list');
+                coinList.innerHTML = '';
+                if (data.data.length === 0) {
+                    coinList.innerHTML = '<p>No Pump.fun coins found</p>';
+                } else {
+                    data.data.forEach(coin => {
+                        const div = document.createElement('div');
+                        div.className = 'top-coin';
+                        div.innerHTML = `
+                            <span>${coin.name}</span>
+                            <span>MCAP: $${coin.MCAP}</span>
+                        `;
+                        coinList.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error('Top Coins Error:', error);
+                document.getElementById('top-coins-list').innerHTML = 'N/A';
+            }
+        }
+
+        function updateData() {
+            fetchCryptoPrices();
+            fetchTopCoins();
+        }
+        updateData();
+        setInterval(updateData, 30000);
+
+        const toggle = document.getElementById('theme-toggle');
+        const logo = document.getElementById('logo');
+        const label = document.querySelector('.toggle-label');
+        toggle.addEventListener('change', () => {
+            const isLightMode = toggle.checked;
+            logo.classList.add('fade');
+            setTimeout(() => {
+                if (isLightMode) {
+                    document.body.classList.add('light-mode');
+                    logo.src = 'BRIZ_FINAL_inverse.png';
+                    label.textContent = 'Light';
+                } else {
+                    document.body.classList.remove('light-mode');
+                    logo.src = 'BRIZ_FINAL.png';
+                    label.textContent = 'Dark';
+                }
+                logo.classList.remove('fade');
+            }, 300);
+        });
+
+        const comingSoon = document.querySelector('.coming-soon');
+        const verySoon = document.querySelector('.very-soon');
+        let isHovering = false;
+        let swapTimeout;
+
+        function startAnimation() {
+            if (comingSoon.parentNode) {
+                comingSoon.style.animation = 'none';
+                void comingSoon.offsetWidth;
+                const animationName = document.body.classList.contains('light-mode') ? 'pulse-light' : 'pulse';
+                comingSoon.style.animation = `${animationName} 5s`;
+                clearTimeout(swapTimeout);
+                swapTimeout = setTimeout(() => {
+                    if (comingSoon.parentNode && isHovering) {
+                        comingSoon.remove();
+                        verySoon.style.display = 'block';
+                    }
+                }, 3750);
+            }
+        }
+
+        comingSoon.addEventListener('mouseenter', () => {
+            isHovering = true;
+            startAnimation();
+        });
+        comingSoon.addEventListener('mouseleave', () => {
+            comingSoon.style.animation = 'none';
+            isHovering = false;
+            clearTimeout(swapTimeout);
+        });
+        comingSoon.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isHovering = true;
+            startAnimation();
+        });
+        comingSoon.addEventListener('touchend', () => {
+            comingSoon.style.animation = 'none';
+            isHovering = false;
+            clearTimeout(swapTimeout);
+        });
+    </script>
+</body>
+</html>
