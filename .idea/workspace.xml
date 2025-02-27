@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="loggin for loadin">
+    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="marketcapfixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" beforeDir="false" afterPath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" afterDir="false" />
     </list>
@@ -123,7 +123,7 @@
       <updated>1740581573682</updated>
       <workItem from="1740581574807" duration="8680000" />
       <workItem from="1740625233327" duration="2057000" />
-      <workItem from="1740682765400" duration="11436000" />
+      <workItem from="1740682765400" duration="11832000" />
     </task>
     <task id="LOCAL-00001" summary="package json shi">
       <option name="closed" value="true" />
@@ -293,7 +293,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740695603433</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="marketcapfixed">
+      <option name="closed" value="true" />
+      <created>1740695890015</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1740695890015</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,6 +342,7 @@
     <MESSAGE value="coingecko prices added&#10;fixed bitquery?" />
     <MESSAGE value="pusheet" />
     <MESSAGE value="loggin for loadin" />
-    <option name="LAST_COMMIT_MESSAGE" value="loggin for loadin" />
+    <MESSAGE value="marketcapfixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="marketcapfixed" />
   </component>
 </project>

@@ -8,7 +8,7 @@ exports.handler = async function (event, context) {
     if (!BITQUERY_ACCESS_TOKEN) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Bitquery access token not configured' })
+            body: JSON.stringify({message: 'Bitquery access token not configured'})
         };
     }
 
@@ -63,7 +63,7 @@ exports.handler = async function (event, context) {
         return {
             statusCode: 200,
             body: JSON.stringify({ success: true, data: tokens })
-        });
+        };
     } catch (error) {
         console.error('Bitquery Error:', error.message);
         return {
