@@ -12,30 +12,28 @@ exports.handler = async function (event, context) {
         };
     }
 
-    const query = `
-        query MyQuery {
-            Solana {
-                TokenSupplyUpdates(
-                    where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
-                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_Marketcap"}
-                    limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
-                    limit: {count: 5}
-                ) {
-                    TokenSupplyUpdate {
-                        Marketcap: PostBalanceInUSD
-                        Currency {
-                            Name
-                            Symbol
-                            MintAddress
-                            Fungible
-                            Decimals
-                            Uri
-                        }
+const query = `
+    query MyQuery {
+        Solana {
+            TokenSupplyUpdates(
+                where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
+                orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_totalValue"}
+                limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
+                limit: {count: 5}
+            ) {
+                TokenSupplyUpdate {
+                    totalValue: totalValue  # Replace with actual field from schema
+                    Currency {
+                        Name
+                        Symbol
+                        MintAddress
+                        Uri
                     }
                 }
             }
         }
-    `;
+    }
+`;
 
     try {
         const response = await fetch('https://graphql.bitquery.io/', {
