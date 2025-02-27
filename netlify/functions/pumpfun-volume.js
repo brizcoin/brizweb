@@ -48,7 +48,7 @@ exports.handler = async function (event, context) {
         });
 
         const text = await response.text();
-        console.log(`Bitquery response status: ${response.status}, full body: ${text}`); // Log full response
+        console.log('Bitquery raw response:', text); // Log the entire response
         if (!response.ok) {
             return {
                 statusCode: response.status,
@@ -57,6 +57,7 @@ exports.handler = async function (event, context) {
         }
 
         const data = JSON.parse(text);
+        console.log('Parsed data structure:', JSON.stringify(data, null, 2)); // Log parsed structure
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => ({
             name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
@@ -69,7 +70,7 @@ exports.handler = async function (event, context) {
             body: JSON.stringify({ success: true, data: tokens })
         };
     } catch (error) {
-        console.log(`Error: ${error.message}`);
+        console.log('Error during fetch:', error.message);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: error.message })
