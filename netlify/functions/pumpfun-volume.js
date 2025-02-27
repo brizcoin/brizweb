@@ -57,7 +57,7 @@ exports.handler = async function (event, context) {
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => ({
             name: `$${update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
-            MCAP: update.TokenSupplyUpdate?.MCAP ? Number(update.TokenSupplyUpdate.MCAP).toFixed(2) : '0.00'
+            Marketcap: update.TokenSupplyUpdate?.Marketcap ? Number(update.TokenSupplyUpdate.Marketcap).toFixed(2) : '0.00'
         }));
 
         return {
