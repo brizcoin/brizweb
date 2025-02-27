@@ -32,6 +32,7 @@ exports.handler = async function (event, context) {
     `;
 
     try {
+        console.log('Sending Bitquery request...');
         const response = await fetch('https://streaming.bitquery.io/eap', {
             method: 'POST',
             headers: {
@@ -40,14 +41,11 @@ exports.handler = async function (event, context) {
             },
             body: JSON.stringify({ query })
         });
-
+        console.log('Bitquery response status:', response.status);
         const text = await response.text();
         console.log('Bitquery raw response:', text);
         if (!response.ok) {
-            return {
-                statusCode: response.status,
-                body: JSON.stringify({ message: `Bitquery API failed: ${text}` })
-            };
+            throw new Error(`Bitquery API failed: ${text} (Status: ${response.status})`);
         }
 
         const data = JSON.parse(text);
@@ -63,7 +61,7 @@ exports.handler = async function (event, context) {
             body: JSON.stringify({ success: true, data: tokens })
         };
     } catch (error) {
-        console.log('Error during fetch:', error.message);
+        console.error('Bitquery Error:', error.message);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: error.message })
