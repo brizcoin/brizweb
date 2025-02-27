@@ -17,7 +17,9 @@ exports.handler = async function (event, context) {
             Solana {
                 TokenSupplyUpdates(
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
-                    limit: {count: 10}  
+                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_Marketcap"}
+                    limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
+                    limit: {count: 10} # Fetch 10 tokens
                 ) {
                     TokenSupplyUpdate {
                         Marketcap: PostBalanceInUSD
@@ -57,36 +59,24 @@ exports.handler = async function (event, context) {
         const data = JSON.parse(text);
         console.log('Parsed data structure:', JSON.stringify(data, null, 2));
 
-        const tokenUpdates = data?.data?.Solana?.TokenSupplyUpdates || [];
-
-        if (!Array.isArray(tokenUpdates) || tokenUpdates.length === 0) {
-            console.log('No token updates found.');
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ success: true, data: [] })
-            };
-        }
-
+        const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => {
-            const tokenData = update?.TokenSupplyUpdate;
-            if (!tokenData) return null;
+            const marketcapRaw = update.TokenSupplyUpdate?.Marketcap;
+            console.log('Raw Marketcap:', marketcapRaw, '| Type:', typeof marketcapRaw);
 
-            const marketcapRaw = tokenData?.Marketcap ?? 0;
-            const marketcap = isNaN(marketcapRaw) ? 0 : parseFloat(marketcapRaw);
-
-            console.log(`Token: ${tokenData.Currency?.Name}, Marketcap: ${marketcap}`);
+            // Convert Marketcap to a float safely
+            const marketcap = marketcapRaw ? parseFloat(marketcapRaw) : 0;
+            console.log('Parsed Marketcap:', marketcap);
 
             return {
-                name: `$${tokenData.Currency?.Name || 'Unknown'}`,
-                symbol: `$${tokenData.Currency?.Symbol || 'Unknown'}`,
-                mcap: marketcap
+                name: update.TokenSupplyUpdate?.Currency?.Name || 'Unknown',
+                symbol: update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
+                mcap: marketcap > 0 ? marketcap.toFixed(2) : '0.00'
             };
-        }).filter(Boolean); // Remove any null values if an update was skipped
+        });
 
-        // Sort by Marketcap (Descending) and select the top 5
+        // Sort tokens by Marketcap (descending) and take top 5
         const topTokens = tokens.sort((a, b) => b.mcap - a.mcap).slice(0, 5);
-
-        console.log('Top 5 Tokens:', JSON.stringify(topTokens, null, 2));
 
         return {
             statusCode: 200,
