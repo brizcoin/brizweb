@@ -20,10 +20,14 @@ exports.handler = async function (event, context) {
                     limit: {count: 5}
                 ) {
                     TokenSupplyUpdate {
-                        MCAP: marketcap
+                        MCAP: Marketcap
                         Currency {
+                            Decimals
+                            Fungible
+                            MintAddress
                             Name
                             Symbol
+                            Uri
                         }
                     }
                 }
@@ -59,7 +63,7 @@ exports.handler = async function (event, context) {
         return {
             statusCode: 200,
             body: JSON.stringify({ success: true, data: tokens })
-        };
+        });
     } catch (error) {
         console.error('Bitquery Error:', error.message);
         return {
