@@ -12,31 +12,39 @@ exports.handler = async function (event, context) {
         };
     }
 
-const query = `
-    query MyQuery {
-        Solana {
-            TokenSupplyUpdates(
-                where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
-                orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_totalValue"}
-                limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
-                limit: {count: 5}
-            ) {
-                TokenSupplyUpdate {
-                    totalValue: totalValue  # Replace with actual field from schema
-                    Currency {
-                        Name
-                        Symbol
-                        MintAddress
-                        Uri
+    const query = `
+        query MyQuery {
+            Solana {
+                TokenSupplyUpdates(
+                    where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
+                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_totalValue"} # Placeholder
+                    limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
+                    limit: {count: 5}
+                ) {
+                    TokenSupplyUpdate {
+                        value: totalValue  # Placeholder, replace with schema field
+                        Currency {
+                            Name
+                            Symbol
+                            MintAddress
+                            Uri
+                        }
+                    }
+                }
+            }
+            __schema {
+                types {
+                    name
+                    fields {
+                        name
                     }
                 }
             }
         }
-    }
-`;
+    `;
 
     try {
-        const response = await fetch('https://graphql.bitquery.io/', {
+        const response = await fetch('https://streaming.bitquery.io/eap', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +54,7 @@ const query = `
         });
 
         const text = await response.text();
-        console.log('Bitquery raw response:', text); // Log the entire response
+        console.log('Bitquery raw response:', text);
         if (!response.ok) {
             return {
                 statusCode: response.status,
@@ -55,11 +63,11 @@ const query = `
         }
 
         const data = JSON.parse(text);
-        console.log('Parsed data structure:', JSON.stringify(data, null, 2)); // Log parsed structure
+        console.log('Parsed data structure:', JSON.stringify(data, null, 2));
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => ({
             name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
-            marketcap: update.TokenSupplyUpdate?.Marketcap || 0,
+            marketcap: update.TokenSupplyUpdate?.value || 0, // Dynamic field
             image: update.TokenSupplyUpdate?.Currency?.Uri || null
         }));
 
