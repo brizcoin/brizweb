@@ -12,23 +12,30 @@ exports.handler = async function (event, context) {
         };
     }
 
-const query = `
-    query MyQuery {
-        Solana {
-            TokenSupplyUpdates(
-                where: { TokenSupplyUpdate: { Currency: { } } } # Remove specific filter
-                orderBy: { descending: Block_Time, descendingByField: "TokenSupplyUpdate_Marketcap" }
-                limitBy: { by: TokenSupplyUpdate_Currency_MintAddress, count: 1 }
-                limit: { count: 100 }
-            ) {
-                TokenSupplyUpdate {
-                    Marketcap: PostBalanceInUSD
-                    Currency { Name Symbol MintAddress Fungible Decimals Uri }
+    const query = `
+        query MyQuery {
+            Solana {
+                TokenSupplyUpdates(
+                    where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
+                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_Marketcap"}
+                    limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
+                    limit: {count: 5}
+                ) {
+                    TokenSupplyUpdate {
+                        Marketcap: PostBalanceInUSD
+                        Currency {
+                            Name
+                            Symbol
+                            MintAddress
+                            Fungible
+                            Decimals
+                            Uri
+                        }
+                    }
                 }
             }
         }
-    }
-`;
+    `;
 
     try {
         const response = await fetch('https://graphql.bitquery.io/', {
@@ -41,7 +48,7 @@ const query = `
         });
 
         const text = await response.text();
-        console.log(`Bitquery response status: ${response.status}, body: ${text.substring(0, 500)}`); // Log more for debugging
+        console.log(`Bitquery response status: ${response.status}, full body: ${text}`); // Log full response
         if (!response.ok) {
             return {
                 statusCode: response.status,
@@ -50,16 +57,11 @@ const query = `
         }
 
         const data = JSON.parse(text);
-        const tokenUpdates = data.data.Solana.TokenSupplyUpdates || [];
-        const fallbackUpdates = data.data.Solana.AllUpdates || [];
-        const tokens = tokenUpdates.length > 0 ? tokenUpdates.slice(0, 5).map(update => ({
-            name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
-            marketcap: update.TokenSupplyUpdate.Marketcap || 0,
-            image: update.TokenSupplyUpdate.Currency.Uri || null
-        })) : fallbackUpdates.slice(0, 5).map(update => ({
-            name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
-            marketcap: update.TokenSupplyUpdate.Marketcap || 0,
-            image: null
+        const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
+        const tokens = tokenUpdates.map(update => ({
+            name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
+            marketcap: update.TokenSupplyUpdate?.Marketcap || 0,
+            image: update.TokenSupplyUpdate?.Currency?.Uri || null
         }));
 
         return {
