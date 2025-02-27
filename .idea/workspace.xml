@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="package.json in main directory">
+    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="js file fix">
       <change beforePath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" beforeDir="false" afterPath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +122,7 @@
       <updated>1740581573682</updated>
       <workItem from="1740581574807" duration="8680000" />
       <workItem from="1740625233327" duration="2057000" />
-      <workItem from="1740682765400" duration="5110000" />
+      <workItem from="1740682765400" duration="5266000" />
     </task>
     <task id="LOCAL-00001" summary="package json shi">
       <option name="closed" value="true" />
@@ -148,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740688230586</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="js file fix">
+      <option name="closed" value="true" />
+      <created>1740688329956</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740688329956</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,6 +189,7 @@
     <MESSAGE value="package json shi" />
     <MESSAGE value="after package index fix" />
     <MESSAGE value="package.json in main directory" />
-    <option name="LAST_COMMIT_MESSAGE" value="package.json in main directory" />
+    <MESSAGE value="js file fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="js file fix" />
   </component>
 </project>
