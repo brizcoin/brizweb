@@ -231,7 +231,7 @@
             <p>SOL: <span id="sol-price">Loading...</span><span id="sol-change" class="price-change"></span></p>
         </div>
         <div class="crypto-container top-coins">
-            <h3>Top 5 Pump.fun Coins</h3>
+            <h3>Interesting memecoins now</h3>
             <div id="top-coins-list">Loading...</div>
         </div>
     </div>
@@ -288,9 +288,11 @@
                     data.data.forEach(coin => {
                         const div = document.createElement('div');
                         div.className = 'top-coin';
+
                         div.innerHTML = `
-                            <span>${coin.symbol} - ${coin.cname}  </span>
+                            <span>${coin.symbol} - ${coin.cname}&nbsp;</span>
                             <span>MCAP: $${coin.mcap}</span>
+                            <span><div className="contract-address" onClick="copyToClipboard('${coin.mintAddress}')"><button className="copy-btn">📋</button></span>
                         `;
                         coinList.appendChild(div);
                     });
@@ -305,6 +307,7 @@
             fetchCryptoPrices();
             fetchTopCoins();
         }
+
         updateData();
         setInterval(updateData, 30000);
 
