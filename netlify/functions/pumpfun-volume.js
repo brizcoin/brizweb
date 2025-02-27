@@ -19,7 +19,7 @@ exports.handler = async function (event, context) {
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
                     orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_Marketcap"}
                     limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
-                    limit: {count: 10} # Fetch 10 tokens
+                    limit: {count: 17} # Fetch 17 tokens
                 ) {
                     TokenSupplyUpdate {
                         Marketcap: PostBalanceInUSD
@@ -69,7 +69,7 @@ exports.handler = async function (event, context) {
             console.log('Parsed Marketcap:', marketcap);
 
             return {
-                name: update.TokenSupplyUpdate?.Currency?.Name || 'Unknown',
+                cname: update.TokenSupplyUpdate?.Currency?.Name || 'Unknown',
                 symbol: update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
                 mcap: marketcap > 0 ? marketcap.toFixed(2) : '0.00'
             };
