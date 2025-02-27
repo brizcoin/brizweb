@@ -8,7 +8,7 @@ exports.handler = async function (event, context) {
     if (!BITQUERY_ACCESS_TOKEN) {
         return {
             statusCode: 500,
-            body: JSON.stringify({message: 'Bitquery access token not configured'})
+            body: JSON.stringify({ message: 'Bitquery access token not configured' })
         };
     }
 
@@ -19,15 +19,15 @@ exports.handler = async function (event, context) {
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
                     limit: {count: 5}
                 ) {
-                TokenSupplyUpdate {
+                    TokenSupplyUpdate {
                         Marketcap: PostBalanceInUSD
                         Currency {
-                          Name
-                          Symbol
-                          MintAddress
-                          Fungible
-                          Decimals
-                          Uri
+                            Name
+                            Symbol
+                            MintAddress
+                            Fungible
+                            Decimals
+                            Uri
                         }
                     }
                 }
@@ -45,21 +45,33 @@ exports.handler = async function (event, context) {
             },
             body: JSON.stringify({ query })
         });
+
         console.log('Bitquery response status:', response.status);
         const text = await response.text();
         console.log('Bitquery raw response:', text);
+
         if (!response.ok) {
             throw new Error(`Bitquery API failed: ${text} (Status: ${response.status})`);
         }
 
         const data = JSON.parse(text);
         console.log('Parsed data structure:', JSON.stringify(data, null, 2));
+
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
-        const tokens = tokenUpdates.map(update => ({
-            name: `$${update.TokenSupplyUpdate?.Currency?.Name || 'Unknown'}`,
-            symbol: `$${update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
-            mcap: update.TokenSupplyUpdate?.Marketcap ? Number(update.TokenSupplyUpdate.Marketcap).toFixed(2) : '0.00'
-        }));
+        const tokens = tokenUpdates.map(update => {
+            const marketcapRaw = update.TokenSupplyUpdate?.Marketcap;
+            console.log('Raw Marketcap:', marketcapRaw, '| Type:', typeof marketcapRaw);
+
+            // Ensure Marketcap is parsed correctly
+            const marketcap = marketcapRaw ? parseFloat(marketcapRaw) : 0;
+            console.log('Parsed Marketcap:', marketcap);
+
+            return {
+                name: `$${update.TokenSupplyUpdate?.Currency?.Name || 'Unknown'}`,
+                symbol: `$${update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
+                mcap: marketcap > 0 ? marketcap.toFixed(2) : '0.00'
+            };
+        });
 
         return {
             statusCode: 200,
