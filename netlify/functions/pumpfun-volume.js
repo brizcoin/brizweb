@@ -17,7 +17,7 @@ exports.handler = async function (event, context) {
             Solana {
                 TokenSupplyUpdates(
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
-                    limit: {count: 5}
+                    limit: {count: 10}  # Fetch 10 entries instead of 5
                 ) {
                     TokenSupplyUpdate {
                         Marketcap: PostBalanceInUSD
@@ -58,24 +58,32 @@ exports.handler = async function (event, context) {
         console.log('Parsed data structure:', JSON.stringify(data, null, 2));
 
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
+
+        // Convert and extract Marketcap
         const tokens = tokenUpdates.map(update => {
             const marketcapRaw = update.TokenSupplyUpdate?.Marketcap;
             console.log('Raw Marketcap:', marketcapRaw, '| Type:', typeof marketcapRaw);
 
-            // Ensure Marketcap is parsed correctly
             const marketcap = marketcapRaw ? parseFloat(marketcapRaw) : 0;
             console.log('Parsed Marketcap:', marketcap);
 
             return {
                 name: `$${update.TokenSupplyUpdate?.Currency?.Name || 'Unknown'}`,
                 symbol: `$${update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
-                mcap: marketcap > 0 ? marketcap.toFixed(2) : '0.00'
+                mcap: marketcap
             };
         });
 
+        // Sort by Marketcap (Descending) and select the top 5
+        const topTokens = tokens
+            .sort((a, b) => b.mcap - a.mcap)  // Sorting in descending order
+            .slice(0, 5)  // Taking the top 5
+
+        console.log('Top 5 Tokens:', JSON.stringify(topTokens, null, 2));
+
         return {
             statusCode: 200,
-            body: JSON.stringify({ success: true, data: tokens })
+            body: JSON.stringify({ success: true, data: topTokens })
         };
     } catch (error) {
         console.error('Bitquery Error:', error.message);
