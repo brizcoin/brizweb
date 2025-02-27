@@ -26,6 +26,13 @@ exports.handler = async function (event, context) {
                         Currency { Name Symbol MintAddress Fungible Decimals Uri }
                     }
                 }
+                # Fallback to check all recent updates (for debugging)
+                AllUpdates: TokenSupplyUpdates(limit: { count: 5 }) {
+                    TokenSupplyUpdate {
+                        Marketcap: PostBalanceInUSD
+                        Currency { Name Symbol MintAddress }
+                    }
+                }
             }
         }
     `;
@@ -41,7 +48,7 @@ exports.handler = async function (event, context) {
         });
 
         const text = await response.text();
-        console.log(`Bitquery response status: ${response.status}, body: ${text.substring(0, 100)}`);
+        console.log(`Bitquery response status: ${response.status}, body: ${text.substring(0, 500)}`); // Log more for debugging
         if (!response.ok) {
             return {
                 statusCode: response.status,
@@ -50,15 +57,17 @@ exports.handler = async function (event, context) {
         }
 
         const data = JSON.parse(text);
-        // Handle potential nested structure or errors
-        const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
-        const tokens = tokenUpdates
-            .slice(0, 5)
-            .map(update => ({
-                name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
-                marketcap: update.TokenSupplyUpdate?.Marketcap || 0,
-                image: update.TokenSupplyUpdate?.Currency?.Uri || null
-            }));
+        const tokenUpdates = data.data.Solana.TokenSupplyUpdates || [];
+        const fallbackUpdates = data.data.Solana.AllUpdates || [];
+        const tokens = tokenUpdates.length > 0 ? tokenUpdates.slice(0, 5).map(update => ({
+            name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
+            marketcap: update.TokenSupplyUpdate.Marketcap || 0,
+            image: update.TokenSupplyUpdate.Currency.Uri || null
+        })) : fallbackUpdates.slice(0, 5).map(update => ({
+            name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
+            marketcap: update.TokenSupplyUpdate.Marketcap || 0,
+            image: null
+        }));
 
         return {
             statusCode: 200,

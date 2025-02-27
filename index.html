@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRIZ - SOON</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico"> <!-- Add favicon -->
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -241,7 +242,7 @@
 
         async function fetchCryptoPrices() {
             try {
-                const response = await fetch('/.netlify/functions/coingecko-prices'); // Use Netlify function
+                const response = await fetch('/.netlify/functions/coingecko-prices');
                 if (!response.ok) throw new Error(`CoinGecko fetch failed: ${await response.text()}`);
                 const data = await response.json();
 
@@ -281,15 +282,19 @@
 
                 const coinList = document.getElementById('top-coins-list');
                 coinList.innerHTML = '';
-                data.data.forEach(coin => {
-                    const div = document.createElement('div');
-                    div.className = 'top-coin';
-                    div.innerHTML = `
-                        ${coin.image ? `<img src="${coin.image}" alt="${coin.name}">` : ''}
-                        <span>${coin.name}: $${coin.marketcap.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                    `;
-                    coinList.appendChild(div);
-                });
+                if (data.data.length === 0) {
+                    coinList.innerHTML = '<p>No Pump.fun coins found</p>';
+                } else {
+                    data.data.forEach(coin => {
+                        const div = document.createElement('div');
+                        div.className = 'top-coin';
+                        div.innerHTML = `
+                            ${coin.image ? `<img src="${coin.image}" alt="${coin.name}">` : ''}
+                            <span>${coin.name}: $${coin.marketcap.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                        `;
+                        coinList.appendChild(div);
+                    });
+                }
             } catch (error) {
                 console.error('Top Coins Error:', error);
                 document.getElementById('top-coins-list').innerHTML = 'N/A';
