@@ -33,14 +33,14 @@ exports.handler = async function (event, context) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-KEY': BITQUERY_API_KEY
+                'X-API-KEY': BITQUERY_API_KEY // Bitquery expects this header
             },
             body: JSON.stringify({ query })
         });
 
         const text = await response.text();
         if (!response.ok) {
-            console.log(`Bitquery failed: ${text}`);
+            console.log(`Bitquery response: ${text}`);
             return {
                 statusCode: response.status,
                 body: JSON.stringify({ message: `Bitquery API failed: ${text}` })
