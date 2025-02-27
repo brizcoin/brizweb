@@ -17,26 +17,18 @@ exports.handler = async function (event, context) {
             Solana {
                 TokenSupplyUpdates(
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
-                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_totalValue"} # Placeholder
+                    orderBy: {descending: Block_Time, descendingByField: "TokenSupplyUpdate_PostBalanceInUSD"}
                     limitBy: {by: TokenSupplyUpdate_Currency_MintAddress, count: 1}
                     limit: {count: 5}
                 ) {
                     TokenSupplyUpdate {
-                        value: totalValue  # Placeholder, replace with schema field
+                        marketcap: PostBalanceInUSD
                         Currency {
                             Name
                             Symbol
                             MintAddress
                             Uri
                         }
-                    }
-                }
-            }
-            __schema {
-                types {
-                    name
-                    fields {
-                        name
                     }
                 }
             }
@@ -67,7 +59,7 @@ exports.handler = async function (event, context) {
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => ({
             name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
-            marketcap: update.TokenSupplyUpdate?.value || 0, // Dynamic field
+            marketcap: update.TokenSupplyUpdate?.marketcap || 0,
             image: update.TokenSupplyUpdate?.Currency?.Uri || null
         }));
 
