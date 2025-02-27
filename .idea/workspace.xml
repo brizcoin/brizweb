@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="top5 auth fix">
+    <list default="true" id="625c30d6-51f9-40cf-aec5-fce7fb66d110" name="Changes" comment="bitquery access token fix">
+      <change afterPath="$PROJECT_DIR$/netlify/functions/coingecko-prices.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" beforeDir="false" afterPath="$PROJECT_DIR$/netlify/functions/pumpfun-volume.js" afterDir="false" />
@@ -18,8 +19,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="JavaScript File" />
         <option value="package.json" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -124,7 +125,7 @@
       <updated>1740581573682</updated>
       <workItem from="1740581574807" duration="8680000" />
       <workItem from="1740625233327" duration="2057000" />
-      <workItem from="1740682765400" duration="8633000" />
+      <workItem from="1740682765400" duration="9006000" />
     </task>
     <task id="LOCAL-00001" summary="package json shi">
       <option name="closed" value="true" />
@@ -190,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740691889511</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="bitquery access token fix">
+      <option name="closed" value="true" />
+      <created>1740693088451</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1740693088451</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -227,6 +236,7 @@
     <MESSAGE value="secret stored propleryl, Bitquery switched to" />
     <MESSAGE value="top5coins" />
     <MESSAGE value="top5 auth fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="top5 auth fix" />
+    <MESSAGE value="bitquery access token fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="bitquery access token fix" />
   </component>
 </project>

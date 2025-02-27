@@ -3,8 +3,9 @@ const fetch = require('node-fetch');
 exports.handler = async function (event, context) {
     const BITQUERY_ACCESS_TOKEN = process.env.BITQUERY_ACCESS_TOKEN;
 
+    console.log('BITQUERY_ACCESS_TOKEN:', BITQUERY_ACCESS_TOKEN ? 'Set' : 'Not set');
+
     if (!BITQUERY_ACCESS_TOKEN) {
-        console.log('BITQUERY_ACCESS_TOKEN is not set in environment variables');
         return {
             statusCode: 500,
             body: JSON.stringify({ message: 'Bitquery access token not configured' })
@@ -49,12 +50,14 @@ exports.handler = async function (event, context) {
         }
 
         const data = JSON.parse(text);
-        const tokens = data.data.Solana.TokenSupplyUpdates
+        // Handle potential nested structure or errors
+        const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
+        const tokens = tokenUpdates
             .slice(0, 5)
             .map(update => ({
-                name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
-                marketcap: update.TokenSupplyUpdate.Marketcap || 0,
-                image: update.TokenSupplyUpdate.Currency.Uri || null
+                name: update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
+                marketcap: update.TokenSupplyUpdate?.Marketcap || 0,
+                image: update.TokenSupplyUpdate?.Currency?.Uri || null
             }));
 
         return {
