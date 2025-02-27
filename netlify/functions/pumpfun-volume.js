@@ -19,15 +19,15 @@ exports.handler = async function (event, context) {
                     where: {TokenSupplyUpdate: {Currency: {MintAddress: {includes: "pump"}}}}
                     limit: {count: 5}
                 ) {
-                    TokenSupplyUpdate {
+                TokenSupplyUpdate {
                         Marketcap: PostBalanceInUSD
                         Currency {
-                            Decimals
-                            Fungible
-                            MintAddress
-                            Name
-                            Symbol
-                            Uri
+                          Name
+                          Symbol
+                          MintAddress
+                          Fungible
+                          Decimals
+                          Uri
                         }
                     }
                 }
@@ -56,8 +56,9 @@ exports.handler = async function (event, context) {
         console.log('Parsed data structure:', JSON.stringify(data, null, 2));
         const tokenUpdates = data.data?.Solana?.TokenSupplyUpdates || [];
         const tokens = tokenUpdates.map(update => ({
-            name: `$${update.TokenSupplyUpdate?.Currency?.Name || update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
-            Marketcap: update.TokenSupplyUpdate?.Marketcap ? Number(update.TokenSupplyUpdate.Marketcap).toFixed(2) : '0.00'
+            name: `$${update.TokenSupplyUpdate?.Currency?.Name || 'Unknown'}`,
+            symbol: `$${update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown'}`,
+            mcap: update.TokenSupplyUpdate?.Marketcap ? Number(update.TokenSupplyUpdate.Marketcap).toFixed(2) : '0.00'
         }));
 
         return {
