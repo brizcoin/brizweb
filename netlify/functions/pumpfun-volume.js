@@ -20,7 +20,7 @@ exports.handler = async function (event, context) {
                     limit: {count: 5}
                 ) {
                     TokenSupplyUpdate {
-                        MCAP: Marketcap
+                        Marketcap: PostBalanceInUSD
                         Currency {
                             Decimals
                             Fungible
