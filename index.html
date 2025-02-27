@@ -257,7 +257,7 @@
                 document.getElementById('btc-change').textContent = `(${btcChange}%)`;
                 document.getElementById('btc-change').classList.add(btcChange >= 0 ? 'positive' : 'negative');
 
-                await delay(2000); // 2-second delay between requests
+                await delay(2000); // 2-second delay
                 document.getElementById('eth-price').textContent = `$${data.ethereum.usd.toLocaleString()}`;
                 const ethChange = data.ethereum.usd_24h_change.toFixed(2);
                 document.getElementById('eth-change').textContent = `(${ethChange}%)`;

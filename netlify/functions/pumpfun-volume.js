@@ -1,12 +1,13 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function (event, context) {
-    const BITQUERY_API_KEY = process.env.BITQUERY_API_KEY;
+    const BITQUERY_ACCESS_TOKEN = process.env.BITQUERY_ACCESS_TOKEN;
 
-    if (!BITQUERY_API_KEY) {
+    if (!BITQUERY_ACCESS_TOKEN) {
+        console.log('BITQUERY_ACCESS_TOKEN is not set in environment variables');
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Bitquery API key not configured' })
+            body: JSON.stringify({ message: 'Bitquery access token not configured' })
         };
     }
 
@@ -33,14 +34,14 @@ exports.handler = async function (event, context) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-KEY': BITQUERY_API_KEY // Bitquery expects this header
+                'Authorization': `Bearer ${BITQUERY_ACCESS_TOKEN}`
             },
             body: JSON.stringify({ query })
         });
 
         const text = await response.text();
+        console.log(`Bitquery response status: ${response.status}, body: ${text.substring(0, 100)}`);
         if (!response.ok) {
-            console.log(`Bitquery response: ${text}`);
             return {
                 statusCode: response.status,
                 body: JSON.stringify({ message: `Bitquery API failed: ${text}` })
@@ -49,7 +50,7 @@ exports.handler = async function (event, context) {
 
         const data = JSON.parse(text);
         const tokens = data.data.Solana.TokenSupplyUpdates
-            .slice(0, 5) // Top 5 coins
+            .slice(0, 5)
             .map(update => ({
                 name: update.TokenSupplyUpdate.Currency.Name || update.TokenSupplyUpdate.Currency.Symbol || 'Unknown',
                 marketcap: update.TokenSupplyUpdate.Marketcap || 0,
