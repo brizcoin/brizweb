@@ -24,6 +24,18 @@
             background-color: #ffffff;
             color: #000000;
         }
+        .emoji-eyes {
+            position: absolute;
+            font-size: 3rem;
+            color: #ffffff;
+            pointer-events: none; /* Prevents interference with clicks */
+        }
+        body.light-mode .emoji-eyes {
+            color: #000000;
+        }
+        .emoji-eyes.active {
+            opacity: 1;
+        }
         .coming-soon {
             font-size: 4rem;
             font-weight: bold;
@@ -224,6 +236,7 @@
             <span class="slider"></span>
         </label>
     </div>
+    <div id="emoji-eyes" class="emoji-eyes"></div>
     <div class="crypto-columns">
         <div class="crypto-container prices">
             <p>BTC: <span id="btc-price">Loading...</span><span id="btc-change" class="price-change"></span></p>
@@ -377,6 +390,54 @@
             isHovering = false;
             clearTimeout(swapTimeout);
         });
+        const emojiEyes = document.getElementById('emoji-eyes');
+
+
+//eye BS
+let eyeCount = 0;
+const maxEyes = 5;
+
+function getRandomPosition() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const padding = 50; // Keep away from edges
+    const centerZone = 300; // Avoid center area (approx. size of "Coming Soon")
+    const bottomZone = 200; // Avoid bottom area (X logo + crypto charts)
+
+    let x, y;
+    do {
+        x = padding + Math.random() * (windowWidth - 2 * padding);
+        y = padding + Math.random() * (windowHeight - bottomZone - padding);
+    } while (
+        x > windowWidth / 2 - centerZone / 2 &&
+        x < windowWidth / 2 + centerZone / 2 &&
+        y > windowHeight / 2 - centerZone / 2 &&
+        y < windowHeight / 2 + centerZone / 2
+    );
+
+    return { x, y };
+}
+
+function addEmojiEyes() {
+    if (eyeCount < maxEyes) {
+        const { x, y } = getRandomPosition();
+        const eyeElement = document.createElement('div');
+        eyeElement.className = 'emoji-eyes';
+        eyeElement.textContent = '👀';
+        eyeElement.style.left = `${x}px`;
+        eyeElement.style.top = `${y}px`;
+        document.body.appendChild(eyeElement); // Append directly to body
+        eyeCount++;
+        console.log(`Added eyes #${eyeCount} at x:${x}, y:${y}`); // Debug log
+    } else {
+        clearInterval(eyeInterval);
+        console.log('Stopped adding eyes at count 5'); // Debug log
+    }
+}
+
+// Start the interval, first appearance after 8 seconds
+const eyeInterval = setInterval(addEmojiEyes, 8000);
+console.log('Emoji eyes script started'); // Confirm script runs
     </script>
 </body>
 </html>
