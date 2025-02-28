@@ -288,12 +288,12 @@
                     data.data.forEach(coin => {
                         const div = document.createElement('div');
                         div.className = 'top-coin';
-
                         div.innerHTML = `
                             <span>${coin.symbol} - ${coin.cname}&nbsp;</span>
                             <span>MCAP: $${coin.mcap}</span>
-                            <span><div className="contract-address" onClick="copyToClipboard('${coin.mintAddress}')"><button className="copy-btn">📋</button></span>
-                        `;
+                            <span><button class="copy-btn" onclick="copyToClipboard('${coin.mintAddress}')">📋</button>
+</span>
+`;
                         coinList.appendChild(div);
                     });
                 }
@@ -302,7 +302,13 @@
                 document.getElementById('top-coins-list').innerHTML = 'N/A';
             }
         }
-
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('CA Copied to clipboard: ' + text);
+            }).catch(err => {
+                console.error('Could not copy text:', err);
+            });
+        }
         function updateData() {
             fetchCryptoPrices();
             fetchTopCoins();

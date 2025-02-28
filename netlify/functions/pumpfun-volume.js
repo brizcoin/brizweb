@@ -71,7 +71,7 @@ exports.handler = async function (event, context) {
             return {
                 cname: update.TokenSupplyUpdate?.Currency?.Name || 'Unknown',
                 symbol: update.TokenSupplyUpdate?.Currency?.Symbol || 'Unknown',
-                mcap: marketcap > 0 ? marketcap.toFixed(2) : '0.00',
+                mcap: marketcap > 0 ? marketcap.toFixed(2) : 'Unknown',
                 mintAddress: update.TokenSupplyUpdate?.Currency?.MintAddress || 'Unknown'
             };
         });
